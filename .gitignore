@@ -1,0 +1,26 @@
+# Node
+node_modules/
+
+# Env / secrets
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+
+
+# Locks
+package-lock.json
+
+

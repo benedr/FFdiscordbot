@@ -1,0 +1,19 @@
+{
+  "name": "ff-sensbot",
+  "version": "1.0.0",
+  "description": "Discord bot that welcomes users and provides Free Fire sensitivity settings by device.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5",
+    "fuse.js": "^7.0.0"
+  }
+}
+
