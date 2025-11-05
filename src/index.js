@@ -37,6 +37,7 @@ const SERIES_ALIASES = [
     { alias: 'tt', label: 'Tecno', startsWith: 'Tecno ' },
     { alias: 'po', label: 'Poco', startsWith: 'Poco ' },
     { alias: 'op1', label: 'OnePlus', startsWith: 'OnePlus ' },
+    { alias: 'gn', label: 'Gionee', startsWith: 'Gionee ' },
 ];
 
 function findSeries(aliasOrText) {
@@ -188,6 +189,7 @@ client.on(Events.MessageCreate, async message => {
             '`!tt` Tecno',
             '`!ttspark` Tecno Spark',
             '`!ttcamon` Tecno Camon',
+            '`!gn` Gionee',
         ].join(' • ');
 
         const usage = [
@@ -250,6 +252,7 @@ client.on(Events.MessageCreate, async message => {
         { cmd: 'tt', label: 'Tecno', startsWith: 'Tecno ' },
         { cmd: 'ttspark', label: 'Tecno Spark', startsWith: 'Tecno Spark ' },
         { cmd: 'ttcamon', label: 'Tecno Camon', startsWith: 'Tecno Camon ' },
+        { cmd: 'gn', label: 'Gionee', startsWith: 'Gionee ' },
     ];
 
     const direct = directSeriesMap.find(s => s.cmd === cmd);

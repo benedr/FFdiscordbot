@@ -1,7 +1,7 @@
 // Complete sensitivity database for Free Fire across major phone brands
-// Exported as a plain object for easy lookup
+// We will normalize any range values (e.g., "90-100") into a single number at load time.
 
-export const SENSITIVITY_DB = {
+const RAW_SENSITIVITY_DB = {
     "Samsung M10": {
         horizontal: "90-100",
         vertical: "85-95",
@@ -162,6 +162,7 @@ export const SENSITIVITY_DB = {
     "Samsung S23": { horizontal: "130-140", vertical: "125-135", scope: "115-125", freeLook: "120-130", tips: "Newest S series. Snapdragon 8 Gen 2. Ultimate gaming phone." },
     "Samsung S24": { horizontal: "135-145", vertical: "130-140", scope: "120-130", freeLook: "125-135", tips: "Latest flagship. Snapdragon 8 Gen 3. Peak performance." },
     // Samsung A Series
+    "Samsung A05": { horizontal: "92-100", vertical: "88-96", scope: "74-82", freeLook: "86-94", tips: "Entry-level A series. Keep sensitivity moderate for control." },
     "Samsung A10": { horizontal: "85-95", vertical: "80-90", scope: "65-75", freeLook: "75-85", tips: "Budget option. Good for casual players." },
     "Samsung A20": { horizontal: "90-100", vertical: "85-95", scope: "70-80", freeLook: "80-90", tips: "Solid budget device. 90Hz option available." },
     "Samsung A30": { horizontal: "95-105", vertical: "90-100", scope: "75-85", freeLook: "85-95", tips: "Good mid-range option. 90Hz display." },
@@ -255,8 +256,52 @@ export const SENSITIVITY_DB = {
     "Moto G9": { horizontal: "95-105", vertical: "90-100", scope: "75-85", freeLook: "85-95", tips: "Good budget option." },
     "Moto G31": { horizontal: "100-110", vertical: "95-105", scope: "80-90", freeLook: "90-100", tips: "Mid-range option. Good performance." },
     "Moto Edge": { horizontal: "110-120", vertical: "105-115", scope: "90-100", freeLook: "100-110", tips: "Premium option. Excellent display." },
-    "Moto Edge Plus": { horizontal: "115-125", vertical: "110-120", scope: "95-105", freeLook: "105-115", tips: "Flagship killer. Great for gaming." }
+    "Moto Edge Plus": { horizontal: "115-125", vertical: "110-120", scope: "95-105", freeLook: "105-115", tips: "Flagship killer. Great for gaming." },
+
+    // Gionee Series (common models)
+    "Gionee A1": { horizontal: "95-105", vertical: "90-100", scope: "80-90", freeLook: "90-100", tips: "Solid mid-range. Balance control and speed." },
+    "Gionee A1 Lite": { horizontal: "92-102", vertical: "88-98", scope: "78-88", freeLook: "88-98", tips: "Lite variant—slightly lower sensitivity recommended." },
+    "Gionee A1 Plus": { horizontal: "98-108", vertical: "93-103", scope: "83-93", freeLook: "93-103", tips: "Bigger display; bump free look slightly." },
+    "Gionee S6": { horizontal: "90-100", vertical: "85-95", scope: "75-85", freeLook: "85-95", tips: "Older S series. Keep things stable." },
+    "Gionee S9": { horizontal: "95-105", vertical: "90-100", scope: "80-90", freeLook: "90-100", tips: "Improved chipset; good balance." },
+    "Gionee S11": { horizontal: "100-110", vertical: "95-105", scope: "85-95", freeLook: "95-105", tips: "Dual camera S series; competitive casual." },
+    "Gionee S11 Lite": { horizontal: "98-108", vertical: "93-103", scope: "83-93", freeLook: "93-103", tips: "Lite variant; slightly lower scope helps." },
+    "Gionee F103": { horizontal: "88-98", vertical: "83-93", scope: "70-80", freeLook: "82-92", tips: "Budget F series. Favor stability." },
+    "Gionee F205": { horizontal: "92-102", vertical: "87-97", scope: "75-85", freeLook: "86-96", tips: "Entry F series; moderate settings." },
+    "Gionee F205 Pro": { horizontal: "95-105", vertical: "90-100", scope: "78-88", freeLook: "90-100", tips: "Pro variant; a bit faster is fine." },
+    "Gionee M6": { horizontal: "95-105", vertical: "90-100", scope: "80-90", freeLook: "90-100", tips: "Massive battery M series; stable long sessions." },
+    "Gionee M6 Plus": { horizontal: "98-108", vertical: "93-103", scope: "83-93", freeLook: "93-103", tips: "Plus model; slightly higher free look." },
+    "Gionee M7": { horizontal: "100-110", vertical: "95-105", scope: "85-95", freeLook: "95-105", tips: "18:9 display; smooth control." },
+    "Gionee X1": { horizontal: "90-100", vertical: "85-95", scope: "75-85", freeLook: "85-95", tips: "Entry X series; aim for control." }
 };
+
+function toNumber(value) {
+    if (typeof value === 'number') return Math.round(value);
+    if (typeof value !== 'string') return null;
+    const trimmed = value.trim();
+    const rangeMatch = trimmed.match(/^(\d{1,3})\s*[-–]\s*(\d{1,3})$/);
+    if (rangeMatch) {
+        const a = parseInt(rangeMatch[1], 10);
+        const b = parseInt(rangeMatch[2], 10);
+        return Math.round((a + b) / 2);
+    }
+    const num = parseInt(trimmed, 10);
+    return Number.isFinite(num) ? num : null;
+}
+
+function normalizeDevice(device) {
+    return {
+        horizontal: toNumber(device.horizontal),
+        vertical: toNumber(device.vertical),
+        scope: toNumber(device.scope),
+        freeLook: toNumber(device.freeLook),
+        tips: device.tips || '',
+    };
+}
+
+export const SENSITIVITY_DB = Object.fromEntries(
+    Object.entries(RAW_SENSITIVITY_DB).map(([model, dev]) => [model, normalizeDevice(dev)])
+);
 
 export function getAllModels() {
     return Object.keys(SENSITIVITY_DB);
